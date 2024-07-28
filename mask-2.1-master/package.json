@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@prisma/client": "^5.17.0",
+    "@prisma/extension-accelerate": "^1.1.0",
+    "@suryasingh_30/mask-validate": "^1.0.0",
+    "axios": "^1.7.2",
+    "hono": "^4.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.12",
+    "prisma": "^5.17.0",
+    "typescript": "^5.5.4"
+  }
+}

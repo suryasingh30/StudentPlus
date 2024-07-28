@@ -1,0 +1,25 @@
+{
+  "scripts": {
+    "dev": "wrangler dev src/index.ts",
+    "deploy": "wrangler deploy --minify src/index.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.17.0",
+    "@prisma/extension-accelerate": "^1.1.0",
+    "@suryasingh_30/mask-common1": "^1.0.0",
+    "@suryasingh_30/mask-validate": "^1.0.0",
+    "@suryasingh_30/mask-validation": "^1.0.0",
+    "@suryasingh_30/mask-validation1": "^1.0.0",
+    "@suryasingh_30/mask-validation2": "^1.0.0",
+    "@suryasingh_30/mask-validation3": "^1.0.0",
+    "cors": "^2.8.5",
+    "hono": "^4.4.2",
+    "mask-common1": "^1.0.0",
+    "prisma": "^5.14.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240529.0",
+    "wrangler": "^3.57.2"
+  }
+}
