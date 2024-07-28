@@ -1,0 +1,50 @@
+Js is a single threaded and syncronus
+we can make it asyncronus by using asyncronus function
+
+debouncing - delayed sending out request, to save and reduce number of backed calls
+
+High level dom element
+1)document.createElement
+2)document.appendChild
+3)element.setAttribute
+4)element.children
+
+Todo application using DOM manipulation with better solution
+
+Dont clear the DOM upfront, update it based on what has changed.
+Question is, how does it calculated what all has changed?
+Has a todo been marked as complete?
+Has a todo been removed from the backend;
+
+By remembering the old todos in a variable (Virtual DOM)
+
+What is a database:-
+
+Good question to have at the point
+    Why dont we let the user hit the database directly?
+    What extra does the http server provide exactly?
+
+    1) Database were are created using protocols that browsers dont understand.
+    2) Database dont have granual access as a first class citizen. Very hard to do user specific access in them.
+    3) There are some database (firebase) that let you get rid of the https server and try their best to provide granola access.
+
+Database usually allow access to 4 primitives 
+    1)Create Data
+    2)Read Data
+    3)Update Data
+    4)Delete Data
+    Popularly known as CURD
+
+What is Database:-
+
+    Lets see thr API for the mongoose library
+    Eventually, we'll be using prisma (which is the industry standatd way of doing this)
+
+    In mongoose, first you have to define the schema
+    This sounds counter inuttive since mongodb is schemaless?
+
+    That is true, but mongoosemakes you define schema for things like auto completitions/Validating data before it goes in the DB to make setAttribute
+    you're doing things right Schemaless dbs can be very dangereous, using schema in mongo makes it slightly less Deangereous.
+
+
+    
