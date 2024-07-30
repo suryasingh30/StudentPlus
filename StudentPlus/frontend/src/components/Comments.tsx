@@ -1,4 +1,3 @@
-import React from "react";
 import { CommentCard } from "../components/CommentCard";
 
 interface Comment {
@@ -7,12 +6,18 @@ interface Comment {
     createdAt: string;
     userId: string;
     user: {
+        id: string,
         anonymousName: string;
         shortCollegeName: string;
     };
 }
 
-function Comments({ comments }: { comments: Comment[] }) {
+interface CommentsProps {
+    comments: Comment[];
+    onDelete: (commentId: string) => void;
+}
+
+const Comments: React.FC<CommentsProps> = ({ comments, onDelete }) => {
     return (
         <div>
             {comments.length > 0 ? (
@@ -23,12 +28,16 @@ function Comments({ comments }: { comments: Comment[] }) {
                             content={comment.content}
                             createdAt={comment.createdAt}
                             user={comment.user}
+                            onDelete={onDelete}
                         />
                     </div>
                 ))
             ) : (
                 <p>No Comments</p>
             )}
+            <div>
+
+            </div>
         </div>
     );
 }

@@ -12,17 +12,17 @@ const generateRandomName = () => {
   return `${randomAdjective}${randomNoun}`;
 };
 
-const handleCors = (c, next) => {
-  c.header('Access-Control-Allow-Origin', '*');
-  c.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+// const handleCors = (c, next) => {
+//   c.header('Access-Control-Allow-Origin', '*');
+//   c.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+//   c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  if (c.req.method === 'OPTIONS') {
-    return c.status(204).send(); // Handle preflight request
-  }
+//   if (c.req.method === 'OPTIONS') {
+//     return c.status(204).send(); // Handle preflight request
+//   }
 
-  return next();
-};
+//   return next();
+// };
 
 export const userRouter = new Hono<{
   Bindings: {
@@ -31,7 +31,7 @@ export const userRouter = new Hono<{
   }
 }>();
 
-userRouter.use('*', handleCors); // Apply CORS middleware to all routes
+// userRouter.use('*', handleCors); // Apply CORS middleware to all routes
 
 userRouter.get('/colleges', async (c) => {
   const prisma = new PrismaClient({

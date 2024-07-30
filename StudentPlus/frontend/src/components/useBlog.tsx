@@ -14,6 +14,7 @@ interface Blog {
       createdAt: string;
       userId: string;
       user: {
+          id: string;
           anonymousName: string;
           shortCollegeName: string;
       };
@@ -41,8 +42,8 @@ export const useBlog = (id: string) => {
           }
         });
         setBlog(response.data.blog);
-      } catch (err) {
-        setError(err);
+      } catch (error) {
+        // setError();
       } finally {
         setLoading(false);
       }

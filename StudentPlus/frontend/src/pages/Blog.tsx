@@ -1,34 +1,8 @@
-import React from 'react';
 import { AppBar } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
 import { FullBlog } from '../components/FullBlog';
 import { useBlog } from '../components/useBlog';
-
-interface Blog {
-  id: string;
-  title: string;
-  content: string;
-  photoUrl?: string;
-  likeCount: number;
-  commentCount: number;
-  comments: {
-      id: string;
-      content: string;
-      createdAt: string;
-      userId: string;
-      user: {
-          anonymousName: string;
-          shortCollegeName: string;
-      };
-  }[];
-  author: {
-      shortCollegeName: string;
-      anonymousName: string;
-  };
-  createdAt: string;
-}
-
 
 export const Blog = () => {
   const { id } = useParams();

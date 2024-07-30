@@ -20,7 +20,7 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
         const response = await axios.get('http://127.0.0.1:8787/api/v1/user/colleges');
         const collegesData = response.data.colleges.map((college: { fullName: string }) => college.fullName);
         setColleges(collegesData);
-        console.log(collegesData);
+        // console.log(collegesData);
       } catch (error) {
         console.error("Error fetching colleges:", error);
         // Handle the error and update UI accordingly

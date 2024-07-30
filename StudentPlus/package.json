@@ -4,7 +4,8 @@
     "@prisma/extension-accelerate": "^1.1.0",
     "@suryasingh_30/mask-validate": "^1.0.0",
     "axios": "^1.7.2",
-    "hono": "^4.5.2"
+    "hono": "^4.5.2",
+    "jwt-decode": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.12",

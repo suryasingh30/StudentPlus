@@ -3,6 +3,8 @@ import { Appbar } from '../components/Appbar';
 import { BlogCard } from '../components/BlogCard';
 import axios from 'axios';
 import { toggleLike } from '../components/ToggleLike';
+import CreatePostBtn from '../components/CreatePostBtn'
+import { getUserIdFromToken } from '../components/getUserId';
 
 interface Blog {
     id: string;
@@ -12,24 +14,29 @@ interface Blog {
     likeCount: number;
     commentCount: number;
     author: {
+        id: string;
         shortCollegeName: string;
         anonymousName: string;
     };
-    createdAt: string;
+    createdAt: string; 
 }
 
 function Blogs() {
     const [blogs, setBlogs] = useState<Blog[]>([]);
+    const [filteredBlogs, setFilteredBlogs] = useState<Blog[]>([]);
+    const [showMyPosts, setShowMyPosts] = useState(false);
+    const userId = getUserIdFromToken();
 
     useEffect(() => {
         axios.get('http://127.0.0.1:8787/api/v1/blog/bulk', {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("token") || ""}`
+                Authorization: localStorage.getItem("token") || ""
             }
         })
         .then(response => {
             if (Array.isArray(response.data)) {
                 setBlogs(response.data);
+                setFilteredBlogs(response.data);
             } else {
                 console.error('Unexpected response format');
             }
@@ -52,12 +59,31 @@ function Blogs() {
         }
     };
 
+    const filterMyPosts = () => {
+        if(showMyPosts){
+            setFilteredBlogs(blogs);
+        }
+        else{
+            const myPosts = blogs.filter(blog => blog.author.id === userId)
+            setFilteredBlogs(myPosts);
+        }
+        setShowMyPosts(!showMyPosts);
+    };
+
     return (
         <div>
             <Appbar />
             <div className='flex flex-col items-center'>
-                {blogs.length > 0 ? (
-                    blogs.map(blog => (
+                <CreatePostBtn/>
+            </div>
+            <div>
+                <button onClick={filterMyPosts}>
+                    {showMyPosts ? "Show all posts" : "MY Posts"}
+                </button>
+            </div>
+            <div className='flex flex-col items-center'>
+            {filteredBlogs.length > 0 ? (
+                    filteredBlogs.map(blog => (
                         <BlogCard
                             key={blog.id}
                             id={blog.id}

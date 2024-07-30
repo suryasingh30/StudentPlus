@@ -1,9 +1,12 @@
-import React from 'react';
 import { Appbar } from "./Appbar";
 import { Avatar } from "./BlogCard";
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useLike } from './UseLike'; // Import useLike
+import { useLike } from './UseLike';
+import { CommentBox } from "./CommentBox";
+import { useState } from "react";
+import  Comments  from "./Comments"
+import axios from "axios";
 
 interface Blog {
     id: string;
@@ -18,6 +21,7 @@ interface Blog {
         createdAt: string;
         userId: string;
         user: {
+            id: string,
             anonymousName: string;
             shortCollegeName: string;
         };
@@ -29,10 +33,26 @@ interface Blog {
     createdAt: string;
 }
 
-
 export const FullBlog = ({ blog }: { blog: Blog }) => {
-    // Initialize the useLike hook with the blog's initial like count and ID
     const { likes, liked, handleToggleLike } = useLike(blog.likeCount, blog.id);
+    const [comments, setComments] = useState(blog.comments);
+
+    const handleCommentAdded = (newComment: any) => {
+        setComments([...comments, newComment]);
+    };
+
+    const handleDeleteComment = async (commentId: string) => {
+        try{
+            await axios.delete(`http://127.0.0.1:8787/api/v1/blog/comment/${commentId}`, {
+                headers: {
+                    Authorization: localStorage.getItem("token") || ""
+                }
+            });
+            setComments(comments.filter(comment => comment.id !== commentId));
+        }catch(error){
+            console.error("error in deleting this comment", 500);
+        }
+    };
 
     return (
         <div>
@@ -55,8 +75,8 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                         )}
                         <div className="pt-4">
                             <div className="text-slate-500">
-                                {likes} {likes === 1 ? "Like" : "Likes"} | {blog.commentCount}{" "}
-                                {blog.commentCount === 1 ? "Comment" : "Comments"}
+                                {likes} {likes === 1 ? "Like" : "Likes"} | {comments.length}{" "}
+                                {comments.length === 1 ? "Comment" : "Comments"}
                             </div>
                             <div className="pt-2">
                                 <button 
@@ -86,6 +106,12 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                         )}
                     </div>
                 </div>
+            </div>
+            <div>
+                <Comments comments={comments} onDelete={handleDeleteComment}/>
+            </div>
+            <div>
+                <CommentBox postId={blog.id} onCommentAdded={handleCommentAdded} />
             </div>
         </div>
     );
