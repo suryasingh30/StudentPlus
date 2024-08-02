@@ -3,8 +3,6 @@ import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { verify } from "hono/jwt";
 import { Context } from 'hono';
-import { FormData } from "formdata-node";
-import { parseForm } from "hono/middleware/multipart";
 
 export const blogRouter = new Hono<{
     Bindings: {
@@ -41,38 +39,52 @@ export const blogRouter = new Hono<{
   
 
   blogRouter.post('/', authMiddleware, async (c) => {
-    const { title, content, photoUrl } = await c.req.json();
-    const authorId = c.get("userId");
-  
-    if (!authorId) {
-      throw new Error("Author ID is missing or invalid");
-    }
-  
-    const prisma = new PrismaClient({
-      datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
-  
     try {
+      const { title, content, photoUrl } = await c.req.json();
+      const authorId = c.get("userId");
+      const published = new Date(); // Set the current date as the published date
+  
+      if (!authorId) {
+        throw new Error("Author ID is missing or invalid");
+      }
+  
+      const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+      }).$extends(withAccelerate());
+  
       const blog = await prisma.post.create({
         data: {
           title,
           content,
           authorId,
-          photoUrl,
+          photoUrl: photoUrl || "",
+        },
+        include: {
+          author: true,
         },
       });
-  
-      return c.json({
+
+      const formattedBlog = {
         id: blog.id,
-      });
+        title: blog.title,
+        content: blog.content,
+        photoUrl: blog.photoUrl,
+        likeCount: blog.likeCount,
+        commentCount: blog.commentCount,
+        author: {
+          id: blog.author.id,
+          shortCollegeName: blog.author.shortCollegeName,
+          anonymousName: blog.author.anonymousName,
+        },
+        createdAt: blog.published,
+      };
+  
+      return c.json(formattedBlog);
     } catch (error) {
       console.error("Error creating blog post:", error);
-      return c.json({ error: "An error occurred while creating the blog post." }, 500);
-    } finally {
-      await prisma.$disconnect();
+      return c.json({ error: "An error occurred while creating the blog post." }, 403);
     }
   });
-  
 
 blogRouter.put('/', async (c) => {
 
@@ -276,66 +288,138 @@ blogRouter.get('/:id/liked', authMiddleware, async (c) => {
 });
 
 blogRouter.post('/:id/comment', authMiddleware, async (c) => {
-    const { id: postId } = c.req.param();
-    const userId = c.get("userId");
-    const { content } = await c.req.json();
+  const { id: postId } = c.req.param();
+  const userId = c.get("userId");
+  const { content } = await c.req.json();
 
-    const prisma = new PrismaClient({
-        datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
+  const prisma = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
 
-    try {
-        const comment = await prisma.comment.create({
-            data: {
-                content,
-                postId,
-                userId
-            }
-        });
+  try {
+      const comment = await prisma.comment.create({
+          data: {
+              content,
+              postId,
+              userId
+          },
+          include: {
+              user: true, // Include user data
+          }
+      });
 
-        await prisma.post.update({
-            where: { id: postId },
-            data: {
-                commentCount: {
-                    increment: 1
-                }
-            }
-        });
+      await prisma.post.update({
+          where: { id: postId },
+          data: {
+              commentCount: {
+                  increment: 1
+              }
+          }
+      });
 
-        return c.json({ comment });
-    } catch (error) {
-        console.error("Error creating comment:", error);
-        return c.json({ error: "An error occurred while creating the comment." }, 500);
-    } finally {
-        await prisma.$disconnect();
-    }
+      return c.json({ comment });
+  } catch (error) {
+      console.error("Error creating comment:", error);
+      return c.json({ error: "An error occurred while creating the comment." }, 500);
+  } finally {
+      await prisma.$disconnect();
+  }
 });
 
-blogRouter.delete('/comment/:id', authMiddleware, async (c) => {
-  const { id: commentId } = c.req.param();
+
+blogRouter.delete('/:postId/:commentId', authMiddleware, async (c) => {
+  const { postId, commentId } = c.req.param();
+  const prisma = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL
+  }).$extends(withAccelerate());
+
+  try {
+      // Check if the comment exists and belongs to the post
+      const comment = await prisma.comment.findFirst({
+          where: {
+              id: commentId,
+              postId: postId
+          },
+          select: {
+              id: true,
+              postId: true
+          }
+      });
+
+      if (!comment) {
+          return c.json({ error: "Comment not found" }, 404);
+      }
+
+      // Delete the comment
+      await prisma.comment.delete({
+          where: { id: commentId }
+      });
+
+      // Decrement the comment count of the post
+      await prisma.post.update({
+          where: { id: postId },
+          data: { commentCount: { decrement: 1 } }
+      });
+
+      return c.json({ message: "Comment deleted successfully" });
+  } catch (error) {
+      console.error("Error deleting comment", error);
+      return c.json({ error: "An error occurred while deleting this comment" }, 500);
+  }
+});
+
+blogRouter.delete('/:postId', authMiddleware, async (c) => {
+  const { postId } = c.req.param();
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL
   }).$extends(withAccelerate());
+  console.log("Attempting to delete post with ID:", postId);
 
-  try{
-    const comment = await prisma.comment.findFirst({
+  try {
+    // Find the post to ensure it exists
+    const post = await prisma.post.findUnique({
       where: {
-        id: commentId 
+        id: postId
       },
-      select: {
-        userId: true
+      include: {
+        comments: true,
+        likes: true
       }
     });
 
-    if (!comment) {
-      return c.json({ error: "Comment not found" }, 404);
+    if (!post) {
+      return c.json({ error: "Post not found" }, 404);
     }
 
-    return c.json({ message: "Comment deleted successfully" });
-  }catch(error){
-    console.error("error in deleting comment", error);
-    c.json({error: "an error occured while deleting this comment"}, 500)
+    // Delete all comments associated with the post
+    await prisma.comment.deleteMany({
+      where: {
+        postId: postId
+      }
+    });
+
+    // Delete all likes associated with the post
+    await prisma.like.deleteMany({
+      where: {
+        postId: postId
+      }
+    });
+
+    // Delete the post
+    await prisma.post.delete({
+      where: {
+        id: postId
+      }
+    });
+
+    return c.json({ message: "Post and its comments and likes deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    return c.json({ error: "An error occurred while deleting the post" }, 500);
+  } finally {
+    await prisma.$disconnect();
   }
 });
+
 
 

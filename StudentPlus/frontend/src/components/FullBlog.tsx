@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useLike } from './UseLike';
 import { CommentBox } from "./CommentBox";
 import { useState } from "react";
-import  Comments  from "./Comments"
+import Comments from "./Comments";
 import axios from "axios";
 
 interface Blog {
@@ -18,7 +18,7 @@ interface Blog {
     comments: {
         id: string;
         content: string;
-        createdAt: string;
+        createdAt: Date;
         userId: string;
         user: {
             id: string,
@@ -30,7 +30,7 @@ interface Blog {
         shortCollegeName: string;
         anonymousName: string;
     };
-    createdAt: string;
+    published: Date;
 }
 
 export const FullBlog = ({ blog }: { blog: Blog }) => {
@@ -42,15 +42,15 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
     };
 
     const handleDeleteComment = async (commentId: string) => {
-        try{
-            await axios.delete(`http://127.0.0.1:8787/api/v1/blog/comment/${commentId}`, {
+        try {
+            await axios.delete(`http://127.0.0.1:8787/api/v1/blog/${blog.id}/${commentId}`, {
                 headers: {
                     Authorization: localStorage.getItem("token") || ""
                 }
             });
             setComments(comments.filter(comment => comment.id !== commentId));
-        }catch(error){
-            console.error("error in deleting this comment", 500);
+        } catch (error) {
+            console.error("Error deleting comment:", error);
         }
     };
 
@@ -62,7 +62,7 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                 <div className="grid grid-cols-12 px-10 w-full pt-12 max-w-screen-xl">
                     <div className="col-span-8">
                         <div className="text-5xl font-extrabold">{blog.title}</div>
-                        <div className="text-slate-500 pt-2">Posted on {new Date(blog.createdAt).toLocaleDateString()}</div>
+                        <div className="text-slate-500 pt-2">Posted on {new Date(blog.published).toLocaleDateString()}</div>
                         <div className="pt-4">{blog.content}</div>
                         {blog.photoUrl && (
                             <div className="pt-4">
@@ -108,7 +108,7 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                 </div>
             </div>
             <div>
-                <Comments comments={comments} onDelete={handleDeleteComment}/>
+                <Comments comments={comments} onDelete={handleDeleteComment} />
             </div>
             <div>
                 <CommentBox postId={blog.id} onCommentAdded={handleCommentAdded} />

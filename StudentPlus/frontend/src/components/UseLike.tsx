@@ -34,7 +34,7 @@ export const useLike = (initialLikeCount: number, postId: string) => {
             });
             setLikes(response.data.likeCount);
             setLiked(!liked);
-            toast.success(liked ? 'Unliked!' : 'Liked!');
+            // toast.success(liked ? 'Unliked!' : 'Liked!');
         } catch (error) {
             toast.error("Error toggling like");
         }

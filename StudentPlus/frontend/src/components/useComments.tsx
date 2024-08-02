@@ -4,7 +4,7 @@ import axios from "axios";
 interface Comments{
     id: string;
     content: string;
-    createdAt: string,
+    createdAt: Date,
     userId: string,
     user: {
         anonymousName: string;

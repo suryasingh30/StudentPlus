@@ -3,10 +3,12 @@ import { Appbar } from '../components/Appbar';
 import { BlogCard } from '../components/BlogCard';
 import axios from 'axios';
 import { toggleLike } from '../components/ToggleLike';
-import CreatePostBtn from '../components/CreatePostBtn'
+import CreatePostBtn from '../components/CreatePostBtn';
 import { getUserIdFromToken } from '../components/getUserId';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-interface Blog {
+export interface Blog {
     id: string;
     title: string;
     content: string;
@@ -18,13 +20,14 @@ interface Blog {
         shortCollegeName: string;
         anonymousName: string;
     };
-    createdAt: string; 
+    publishedDate: string;
 }
 
 function Blogs() {
     const [blogs, setBlogs] = useState<Blog[]>([]);
     const [filteredBlogs, setFilteredBlogs] = useState<Blog[]>([]);
     const [showMyPosts, setShowMyPosts] = useState(false);
+    const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest');
     const userId = getUserIdFromToken();
 
     useEffect(() => {
@@ -35,8 +38,9 @@ function Blogs() {
         })
         .then(response => {
             if (Array.isArray(response.data)) {
-                setBlogs(response.data);
-                setFilteredBlogs(response.data);
+                const sortedBlogs = response.data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                setBlogs(sortedBlogs);
+                setFilteredBlogs(sortedBlogs);
             } else {
                 console.error('Unexpected response format');
             }
@@ -46,6 +50,22 @@ function Blogs() {
         });
     }, []);
 
+    const handleDeleteBlog = async (postId: string) => {
+        try {
+            await axios.delete(`http://127.0.0.1:8787/api/v1/blog/${postId}`, {
+                headers: {
+                    Authorization: localStorage.getItem("token") || ""
+                }
+            });
+            toast.done("post deleted");
+            setBlogs(prevBlogs => prevBlogs.filter(blog => blog.id !== postId));
+            setFilteredBlogs(prevBlogs => prevBlogs.filter(blog => blog.id !== postId));
+        } catch (error) {
+            console.error("Error deleting post:", error);
+        }
+    };
+    
+
     const handleToggleLike = async (id: string) => {
         try {
             const token = localStorage.getItem("token") || "";
@@ -54,53 +74,79 @@ function Blogs() {
                 blog.id === id ? { ...blog, likeCount: result.likeCount } : blog
             );
             setBlogs(updatedBlogs);
+            setFilteredBlogs(updatedBlogs);
         } catch (error) {
             console.error("Error toggling like:", error);
         }
     };
 
     const filterMyPosts = () => {
-        if(showMyPosts){
+        if (showMyPosts) {
             setFilteredBlogs(blogs);
-        }
-        else{
-            const myPosts = blogs.filter(blog => blog.author.id === userId)
+        } else {
+            const myPosts = blogs.filter(blog => blog.author.id === userId);
             setFilteredBlogs(myPosts);
         }
         setShowMyPosts(!showMyPosts);
     };
 
+    const toggleSortOrder = () => {
+        const newSortOrder = sortOrder === 'latest' ? 'oldest' : 'latest';
+        setSortOrder(newSortOrder);
+        const sortedBlogs = [...filteredBlogs].sort((a, b) => newSortOrder === 'latest'
+            ? new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime()
+            : new Date(a.publishedDate).getTime() - new Date(b.publishedDate).getTime()
+        );
+        setFilteredBlogs(sortedBlogs);
+    };
+
+    const handleBlogAdded = (newBlog: Blog) => {
+        setBlogs(prevBlogs => {
+            const updatedBlogs = [newBlog, ...prevBlogs];
+            setFilteredBlogs(updatedBlogs);
+            return updatedBlogs;
+        });
+    }
+
     return (
-        <div>
+        <div style={{ backgroundColor: '#eff0f4', minHeight: '100vh', color: 'white' }}>
             <Appbar />
             <div className='flex flex-col items-center'>
-                <CreatePostBtn/>
+                <CreatePostBtn handleBlogAdded={handleBlogAdded}/>
             </div>
-            <div>
+            <div className='flex justify-between items-center px-4 py-2 text-black'>
                 <button onClick={filterMyPosts}>
-                    {showMyPosts ? "Show all posts" : "MY Posts"}
+                    {showMyPosts ? "Show all posts" : "My Posts"}
+                </button>
+                <button onClick={toggleSortOrder}>
+                    Sort by {sortOrder === 'latest' ? "Oldest First" : "Latest First"}
                 </button>
             </div>
             <div className='flex flex-col items-center'>
-            {filteredBlogs.length > 0 ? (
+                {filteredBlogs.length > 0 ? (
                     filteredBlogs.map(blog => (
                         <BlogCard
                             key={blog.id}
                             id={blog.id}
+                            authorId={blog.author.id}
+                            shortCollegeName={blog.author.shortCollegeName || 'Unknown'}
                             authorName={blog.author.anonymousName || 'Unknown'}
                             title={blog.title}
                             content={blog.content}
-                            publishedDate={new Date(blog.createdAt).toLocaleDateString()}
+                            publishedDate={blog.publishedDate}
                             photoUrl={blog.photoUrl}
                             likeCount={blog.likeCount}
                             commentCount={blog.commentCount}
                             onToggleLike={() => handleToggleLike(blog.id)}
+                            handleDeleteBlog={handleDeleteBlog}
+                            setBlogs={setBlogs}
                         />
                     ))
                 ) : (
                     <p>No blogs available</p>
                 )}
             </div>
+            <ToastContainer/>
         </div>
     );
 }
