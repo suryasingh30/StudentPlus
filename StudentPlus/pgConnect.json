@@ -1,8 +1,8 @@
 {
     "Servers": {
         "1": {
-            "Name": "CONNECTION_NAME",
-            "Group": "GROUP_TEST",
+            "Name": "StudentPlus",
+            "Group": "Master",
             "Host": "mask-suryasingh-mask.f.aivencloud.com",
             "Port": 28944,
             "MaintenanceDB": "defaultdb",

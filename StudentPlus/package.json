@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@prisma/client": "^5.17.0",
     "@prisma/extension-accelerate": "^1.1.0",
     "@suryasingh_30/mask-validate": "^1.0.0",

@@ -1,12 +1,11 @@
-import { AiOutlineCloseSquare } from "react-icons/ai";
-
-const Popup = ({ setIsOpenPopup, title, children }) => {
+const Popup = ({ setIsOpenPopup, title, children }: any) => {
   return (
     <div
       onClick={setIsOpenPopup.bind(this, false)}
       style={{
         position: "fixed",
         background: "rgba(0,0,0,0.6)",
+        backdropFilter: 'blur(3px)',
         top: 0,
         left: 0,
         right: 0,

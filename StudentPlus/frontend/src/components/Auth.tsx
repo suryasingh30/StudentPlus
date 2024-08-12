@@ -1,8 +1,9 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Alert from '@mui/material/Alert';
 import { SignupInput } from '@suryasingh_30/mask-validate';
+import emailjs from "@emailjs/browser";
 
 export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
   const navigate = useNavigate();
@@ -13,27 +14,55 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
   });
 
   const [colleges, setColleges] = useState<string[]>([]);
-  
+  const [enterOtp, setEnterOtp] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [generatedOtp, setGeneratedOtp] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchColleges = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:8787/api/v1/user/colleges');
         const collegesData = response.data.colleges.map((college: { fullName: string }) => college.fullName);
         setColleges(collegesData);
-        // console.log(collegesData);
       } catch (error) {
         console.error("Error fetching colleges:", error);
-        // Handle the error and update UI accordingly
-        // Note: You should manage the error state and display the alert accordingly in your component
       }
     };
 
     fetchColleges();
   }, []);
 
-  const [error, setError] = useState<string | null>(null);
+  const sendOtp = async () => {
+    // Generate OTP only when "Send OTP" button is clicked
+    const otp_val = (Math.floor(Math.random() * 10000) + 1000).toString(); // Ensure it's a 4-digit number
+    setGeneratedOtp(otp_val); // Store the generated OTP
 
-  async function sendRequest() {
+    setEnterOtp(true); // Show the OTP input field
+
+    let templateParameter = {
+      reply_to: postInputs.email,
+      OTP: otp_val
+    };
+
+    try {
+      await emailjs.send('service_hxdr8sv', 'template_txz1rbm', templateParameter, 'JlZsRsmsauWRw7_zx');
+      alert('OTP sent to your email!');
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      alert('Failed to send OTP. Please try again.');
+    }
+  };
+
+  const verify = () => {
+    if (otp === generatedOtp) {
+      sendRequest();
+    } else {
+      alert("Invalid OTP");
+    }
+  };
+
+  const sendRequest = async () => {
     try {
       const response = await axios.post(
         `http://127.0.0.1:8787/api/v1/user/${type === 'signup' ? 'signup' : 'signin'}`,
@@ -46,7 +75,7 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
       console.error("Error during authentication:", error);
       setError('An error occurred during authentication. Please try again.');
     }
-  }
+  };
 
   return (
     <div className="h-screen flex justify-center flex-col">
@@ -82,13 +111,32 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
                 onChange={(e) => setPostInputs({ ...postInputs, fullCollegeName: e.target.value })}
               />
             )}
-            <button
-              onClick={sendRequest}
-              type="button"
-              className="mt-3 w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
-            >
-              {type === 'signup' ? 'Sign up' : 'Sign in'}
-            </button>
+            {type === 'signin' && (
+              <button
+                onClick={sendRequest}
+                type="button"
+                className="mt-3 w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+              >
+                {'Sign in'}
+              </button>
+            )}
+            {!enterOtp && type === 'signup' && (
+              <button
+                onClick={sendOtp}
+                type="button"
+                className="mt-3 w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+              >
+                {'Sign up'}
+              </button>
+            )}
+            {enterOtp && (
+              <input type="text" value={otp} placeholder="Enter OTP" onChange={(e) => {
+                setOtp(e.target.value); // Store the entered OTP
+              }} />
+            )}
+            {enterOtp && (
+              <button onClick={verify}>Verify</button>
+            )}
             {error && (
               <Alert variant="filled" severity="error">
                 {error}
@@ -100,6 +148,9 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
     </div>
   );
 };
+
+// Other components (LabelledDropdown, LabelledInput) remain the same
+
 
 interface LabelledDropdownType {
   label: string;
@@ -120,7 +171,7 @@ function LabelledDropdown({ label, options, onChange }: LabelledDropdownType) {
       <label className="block mb-0 text-sm text-black font-semibold pt-1">{label}</label>
       <select
         onChange={onChange}
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
         required
       >
         <option value="">Select a college</option>
@@ -141,8 +192,7 @@ function LabelledInput({ label, placeholder, onChange, type }: LabelledInputType
       <input
         onChange={onChange}
         type={type || "text"}
-        id="first_name"
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
         placeholder={placeholder}
         required
       />

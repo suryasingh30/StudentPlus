@@ -1,0 +1,37 @@
+.sidebar {
+    width: 250px;
+    padding: 20px;
+    background-color: #222;
+    position: fixed;
+    top: 70px; /* Adjust according to Appbar height */
+    left: 0;
+    height: calc(100vh - 60px); /* Adjust according to Appbar height */
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sidebar-button:hover {
+    background-color: #444;
+}
+
+.spacer {
+    flex-grow: 1; /* Pushes the Sign Out button to the bottom */
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none; /* Hide sidebar on narrow screens */
+    }
+}

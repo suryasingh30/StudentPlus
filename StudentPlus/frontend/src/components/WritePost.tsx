@@ -22,7 +22,7 @@ interface Blog {
     shortCollegeName: string;
     anonymousName: string;
   };
-  publishedDate: Date;
+  published: Date;
 }
 
 interface WritePostProps {
@@ -85,7 +85,8 @@ const WritePost: React.FC<WritePostProps> = ({ handleBlogAdded, setIsOpenPopup }
 
   return (
     <div className="max-w-screen-xl mx-auto p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-4 text-center text-black">Create a New Post</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-center text-black">
+        Create a New Post</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="flex flex-col">
           <label htmlFor="title" className="font-medium mb-1 text-black">Title</label>
@@ -102,8 +103,7 @@ const WritePost: React.FC<WritePostProps> = ({ handleBlogAdded, setIsOpenPopup }
           <textarea 
             id="content" 
             {...register('content', { required: true })} 
-            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            rows="5"
+            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black rows='5'"
           />
         </div>
         
