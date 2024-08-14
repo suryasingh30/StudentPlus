@@ -29,7 +29,7 @@ export const useComments = (id: string) => {
                 });
                 setComments(response.data.comments);
             }catch(err){
-                setError(err);
+                setError(error);
             }finally{
                 setLoading(false);
             }

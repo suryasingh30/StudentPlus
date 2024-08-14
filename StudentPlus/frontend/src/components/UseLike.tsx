@@ -44,7 +44,7 @@ export const useLike = (initialLikeCount: number, postId: string) => {
       setLikes(response.data.likeCount);
       setLiked(!liked);
     } catch (error) {
-      if (error.response && error.response.status === 403) {
+      if (error === 403) {
         setIsSigninupPop(true); // Show popup if authentication fails
       } else {
         toast.error('Error toggling like');
