@@ -136,16 +136,26 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
                 type="button"
                 className="mt-5 w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
               >
-                {'Verify'}
+                {'Send Otp'}
               </button>
             )}
             {enterOtp && (
-              <input type="text" value={otp} placeholder="Enter OTP" onChange={(e) => {
-                setOtp(e.target.value); // Store the entered OTP
-              }} />
-            )}
+  <div className="flex flex-col">
+    <label className="text-white mb-1">Enter OTP</label>
+    <input
+      type="text"
+      value={otp}
+      placeholder="Enter OTP"
+      onChange={(e) => {
+        setOtp(e.target.value); // Store the entered OTP
+      }}
+      className="p-2 rounded bg-gray-700 text-white border border-gray-500"
+    />
+  </div>
+)}
+
             {enterOtp && (
-              <button onClick={verify}>Verify</button>
+              <button className="mt-5 w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700" onClick={verify}>Verify</button>
             )}
             {error && (
               <Alert variant="filled" severity="error">
