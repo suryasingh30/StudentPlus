@@ -2,11 +2,12 @@ import { Auth } from '../components/Auth';
 
 export const Signup = () => {
   return (
+    <>
     <div className="flex flex-col items-center justify-center h-screen bg-black">
-      <div className='relative top-[150px]'>
+      <div className='relative top-[100px]'>
         <BubbleText />
       </div>
-      <div className='flex-col items-center justify-center text-white relative top-[160px]'>
+      <div className='flex-col items-center justify-center text-white relative top-[110px]'>
         <h2 className='text-center max-w-screen-md mb-6'>StudentPlus is your go-to platform for navigating college life anonymously. Connect with fellow students, discuss academic pressures, and explore campus trends without revealing your identity. StudentPlus is built to help you stay informed and engaged while preserving your privacy.</h2>
       </div>
         <Auth type="signup"/>
@@ -40,7 +41,10 @@ export const Signup = () => {
           font-weight: 300;
         }
       `}</style>
+      <div className='text-white pb-3'>© 2024 | Designed and Developed by Suryanarayan Singh</div>
     </div>
+    
+    </>
   );
 };
 

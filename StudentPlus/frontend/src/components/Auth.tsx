@@ -113,14 +113,19 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
               type="password"
               placeholder="123456"
               onChange={(e) => setPostInputs({ ...postInputs, password: e.target.value })}
-            />
-        <h2 className='text-white pt-2'>Select Gmail account if you dont have college ID mail</h2>
+              />
+              {type === 'signup' && (
+                    <h2 className='text-white pt-2'>Minimum of length 6</h2>
+                  )}
             {type === 'signup' && (
               <LabelledDropdown
-                label="College"
-                options={colleges}
-                onChange={(e) => setPostInputs({ ...postInputs, fullCollegeName: e.target.value })}
+              label="College"
+              options={colleges}
+              onChange={(e) => setPostInputs({ ...postInputs, fullCollegeName: e.target.value })}
               />
+            )}
+            {type === 'signup' && (
+              <h2 className='text-white pt-2'>Select Gmail account if you dont have college ID mail</h2>
             )}
             {type === 'signin' && (
               <button
@@ -189,7 +194,7 @@ interface LabelledInputType {
 function LabelledDropdown({ label, options, onChange }: LabelledDropdownType) {
   return (
     <div>
-      <label className="block mb-0 text-sm text-black font-semibold pt-1">{label}</label>
+      <label className="block mb-0 text-sm text-black font-semibold pt-0">{label}</label>
       <select
         onChange={onChange}
         className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"

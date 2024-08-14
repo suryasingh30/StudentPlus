@@ -3,7 +3,7 @@ import Auth from '../components/Auth';
 export const Signin = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-black">
-      <div className='relative top-[150px]'>
+      <div className='relative top-[130px]'>
         <BubbleText />
       </div>
       <div className='flex-col items-center justify-center text-white relative top-[160px]'>
@@ -42,6 +42,7 @@ Waiting for pgAdmin 4 to start...
           font-weight: 300;
         }
       `}</style>
+      <div className='text-white pb-3'>© 2024 | Designed and Developed by Suryanarayan Singh</div>
     </div>
   );
 };
