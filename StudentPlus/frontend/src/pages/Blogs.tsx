@@ -10,6 +10,7 @@ import PopularPost from '../components/PopularPost'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { SideBar } from '../components/SideBar';
+import { BACKEND_URL } from '../components/config';
 
 export interface Blog {
     id: string;
@@ -38,7 +39,7 @@ function Blogs() {
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8787/api/v1/blog/bulk', {
+                const response = await axios.get(`${BACKEND_URL}api/v1/blog/bulk`, {
                     headers: {
                         Authorization: localStorage.getItem("token") || ""
                     }
@@ -63,7 +64,7 @@ function Blogs() {
 
     const handleDeleteBlog = async (postId: string) => {
         try {
-            await axios.delete(`http://127.0.0.1:8787/api/v1/blog/${postId}`, {
+            await axios.delete(`${BACKEND_URL}/v1/blog/${postId}`, {
                 headers: {
                     Authorization: localStorage.getItem("token") || ""
                 }
@@ -133,11 +134,15 @@ function Blogs() {
             <Appbar/>
             <div className='pt-3 pb-0.15 flex flex-col items-center'>
                 <CreatePostBtn handleBlogAdded={handleBlogAdded} />
-                <div className='absolute pt-5 top-28 flex justify-between'>
-                    <button onClick={filterMyPosts} className='bg-blue-500 text-white px-4 py-2 rounded mr-28'>
+                <div className='absolute pt-5 top-28 flex justify-between' 
+                    style={{marginRight: '32rem'}}>
+                    <button onClick={filterMyPosts} style={{backgroundColor: '#7091E6'}} className='text-white px-4 py-2 rounded mr-28'>
                         {showMyPosts ? "Show all posts" : "My Posts"}
                     </button>
-                    <button onClick={toggleSortOrder} className='bg-green-500 text-white px-4 py-2 rounded ml-28'>
+                </div>
+                <div className='absolute pt-5 top-28 flex justify-between'
+                    style={{marginLeft: '27rem'}}>
+                    <button onClick={toggleSortOrder} style={{backgroundColor: '#7091E6'}} className='text-white px-4 py-2 rounded ml-28'>
                         Sort by {sortOrder === 'latest' ? "Oldest First" : "Latest First"}
                     </button>
                 </div>
@@ -156,8 +161,8 @@ function Blogs() {
                             key={blog.id}
                             id={blog.id}
                             authorId={blog.author.id}
-                            shortCollegeName={blog.author.shortCollegeName || 'Unknown'}
-                            authorName={blog.author.anonymousName || 'Unknown'}
+                            shortCollegeName={blog.author.anonymousName || 'Unknown'}
+                            authorName={blog.author.shortCollegeName || 'Unknown'}
                             title={blog.title}
                             content={blog.content}
                             published={blog.published}

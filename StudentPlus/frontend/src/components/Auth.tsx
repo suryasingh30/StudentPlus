@@ -2,8 +2,9 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Alert from '@mui/material/Alert';
-import { SignupInput } from '@suryasingh_30/mask-validate';
+import { signupInput, SignupInput } from '@suryasingh_30/mask-validate';
 import emailjs from "@emailjs/browser";
+import { BACKEND_URL } from './config';
 
 export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
   const navigate = useNavigate();
@@ -45,6 +46,15 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
       OTP: otp_val
     };
 
+    const parsedResult = signupInput.safeParse(postInputs);
+    if(!parsedResult.success){
+      alert('Invalid Inputs')
+      return ({
+        message: "inputs are incorrect",
+        errors: parsedResult.error.format()
+      });
+    };
+
     try {
       await emailjs.send('service_hxdr8sv', 'template_txz1rbm', templateParameter, 'JlZsRsmsauWRw7_zx');
       alert('OTP sent to your email!');
@@ -65,7 +75,7 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
   const sendRequest = async () => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8787/api/v1/user/${type === 'signup' ? 'signup' : 'signin'}`,
+        `${BACKEND_URL}api/v1/user/${type === 'signup' ? 'signup' : 'signin'}`,
         postInputs
       );
       const jwt = response.data;
@@ -115,7 +125,7 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
               <button
                 onClick={sendRequest}
                 type="button"
-                className="mt-3 w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                className=" mt-5 w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
               >
                 {'Sign in'}
               </button>
@@ -124,9 +134,9 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
               <button
                 onClick={sendOtp}
                 type="button"
-                className="mt-3 w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                className="mt-5 w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
               >
-                {'Sign up'}
+                {'Verify'}
               </button>
             )}
             {enterOtp && (
@@ -188,7 +198,7 @@ function LabelledDropdown({ label, options, onChange }: LabelledDropdownType) {
 function LabelledInput({ label, placeholder, onChange, type }: LabelledInputType) {
   return (
     <div>
-      <label className="block mb-0 text-sm text-black font-semibold pt-1">{label}</label>
+      <label className="block mb-0 text-sm text-black font-semibold pt-0">{label}</label>
       <input
         onChange={onChange}
         type={type || "text"}

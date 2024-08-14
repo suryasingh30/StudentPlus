@@ -20,7 +20,7 @@ interface CommentsProps {
 
 const Comments: React.FC<CommentsProps> = ({ comments, onDelete }) => {
   return (
-    <div>
+    <div className="text-xl text-white">
       {comments.length > 0 ? (
         comments.map((comment) => (
           <div key={comment.id}>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { BACKEND_URL } from './config';
 
 export const useLike = (initialLikeCount: number, postId: string) => {
   const [likes, setLikes] = useState(initialLikeCount);
@@ -13,7 +14,7 @@ export const useLike = (initialLikeCount: number, postId: string) => {
       if(token === "")
             return;
       try {
-        const response = await axios.get(`http://127.0.0.1:8787/api/v1/blog/${postId}/liked`, {
+        const response = await axios.get(`${BACKEND_URL}api/v1/blog/${postId}/liked`, {
           headers: {
             Authorization: token,
           },

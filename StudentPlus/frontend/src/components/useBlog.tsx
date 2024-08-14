@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { BACKEND_URL } from './config';
 
 interface Blog {
   id: string;
@@ -22,8 +23,9 @@ interface Blog {
   author: {
       shortCollegeName: string;
       anonymousName: string;
+      fullCollegeName: string;
   };
-  createdAt: string;
+  published: Date;
 }
 
 export const useBlog = (id: string) => {
@@ -36,7 +38,7 @@ export const useBlog = (id: string) => {
       const token = localStorage.getItem("token") || "";
       try {
         setLoading(true);
-        const response = await axios.get(`http://127.0.0.1:8787/api/v1/blog/${id}`, {
+        const response = await axios.get(`${BACKEND_URL}api/v1/blog/${id}`, {
           headers: {
             Authorization: token
           }

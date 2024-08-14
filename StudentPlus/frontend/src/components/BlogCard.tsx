@@ -75,11 +75,11 @@ export const BlogCard = ({
             >
                     <div className="flex items-start mb-2">
                         <Avatar name={authorName} />
-                        <div className="font-bold pl-2 text-2xl flex justify-center">{shortCollegeName}</div>
+                        <div className="font-bold pl-2 text-2xl flex justify-center">{authorName}</div>
                         <div className="flex justify-center flex-col pl-2">
                             <Circle />
                         </div>
-                        <div className="font-normal pl-2 text-lg flex justify-center flex-col">{authorName}</div>
+                        <div className="font-normal pl-2 text-lg flex justify-center flex-col">{shortCollegeName}</div>
                         <div className="pl-10 font-thin text-black-200 text-sm flex flex-col ml-auto">{new Date(published).toLocaleDateString()}</div>
                     </div>
                     <hr className="border-gray-400 my-2" />

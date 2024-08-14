@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { BACKEND_URL } from './config';
 
 interface FormData {
   title: string;
@@ -63,7 +64,7 @@ const WritePost: React.FC<WritePostProps> = ({ handleBlogAdded, setIsOpenPopup }
         photoUrl: imageUrl || "",
       };
 
-      const response = await axios.post('http://127.0.0.1:8787/api/v1/blog', postData, {
+      const response = await axios.post(`${BACKEND_URL}api/v1/blog`, postData, {
         headers: {
           Authorization: localStorage.getItem('token') || '',
         },

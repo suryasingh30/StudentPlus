@@ -20,13 +20,8 @@ const Popup = ({ setIsOpenPopup, title, children }: any) => {
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          // position: "relative",
-          // background: "white",
-          // borderRadius: "8px",
           width: "90%",
           maxWidth: "500px",
-          // padding: "20px 10px",
-          // animation: "dropTop .3s linear",
           zIndex: 1000
         }}
       >

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Avatar } from "./BlogCard";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { BACKEND_URL } from "./config";
 
 interface UserDetail {
     shortCollegeName: string;
@@ -11,11 +12,12 @@ interface UserDetail {
 export const SideBar = () => {
 
     const [userDetail, setUserDetail] = useState<UserDetail | null>(null);
-
+    const [flag, setFlag] = useState(false);
+    
     useEffect(() => {
         const fetchUserDetail = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8787/api/v1/blog/userDetails', {
+                const response = await axios.get(`${BACKEND_URL}api/v1/blog/userDetails`, {
                     headers: {
                         Authorization: localStorage.getItem("token") || ""
                     }
@@ -27,6 +29,24 @@ export const SideBar = () => {
         };
         fetchUserDetail();
     }, []);
+
+    useEffect(() => {
+        try {
+            const token = localStorage.getItem("token");
+            if (token === null || token === "") {
+                setFlag(true);
+            } else {
+                setFlag(false);
+            }
+        } catch (error) {
+            console.error("Error checking token in localStorage:", error);
+        }
+    }, []);
+    
+    const logOutUser = () => {
+        localStorage.removeItem("token");
+        window.location.reload();
+    }
 
     return (
         <div className="sidebar">
@@ -52,11 +72,20 @@ export const SideBar = () => {
                 <button type="button" className="sidebar-button">My College</button>
             </Link>
 
+            <Link to={'/contact'}>
+                <button type="button" className="sidebar-button">Contact Me</button>
+            </Link>
+
             <div className="spacer"></div>
 
-            <Link to={'/signOut'}>
-                <button type="button" className="sidebar-button">Sign Out</button>
+            {!flag && (
+                <Link to={'/blogs'}>
+                <button type="button" 
+                        className="sidebar-button"
+                        onClick={logOutUser}
+                >Sign Out</button>
             </Link>
+            )}
         </div>
     );
 };

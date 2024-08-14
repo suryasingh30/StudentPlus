@@ -255,7 +255,8 @@ blogRouter.get('/:id', async (c) => {
                 author: {
                     select: {
                         shortCollegeName: true,
-                        anonymousName: true
+                        anonymousName: true,
+                        fullCollegeName: true,
                     }
                 }
             }

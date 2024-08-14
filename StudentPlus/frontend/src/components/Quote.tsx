@@ -1,8 +1,6 @@
-import React from 'react'
-
 export const Quote = () => {
   return (
-    <div className='bg-slate-200 h-screen flex justify-center flex-col'>
+    <div style={{backgroundColor: '#1E3A7B'}} className='h-screen flex justify-center flex-col'>
       <div className='flex justify-center'>
         <div className='max-w-lg text-center'>
           <h1 className='text-2xl font-bold mb-4'>StudentPlus</h1>

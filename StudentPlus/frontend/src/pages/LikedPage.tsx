@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import BlogSkeleton from '../components/BlogSkeleton';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { BACKEND_URL } from '../components/config';
 
 interface Blog {
     id: string;
@@ -29,7 +30,7 @@ function LikedPage() {
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8787/api/v1/blog/likedPosts', {
+                const response = await axios.get(`${BACKEND_URL}api/v1/blog/likedPosts`, {
                     headers: {
                         Authorization: localStorage.getItem("token") || ""
                     }
