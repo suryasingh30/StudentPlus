@@ -23,7 +23,7 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
   useEffect(() => {
     const fetchColleges = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8787/api/v1/user/colleges');
+        const response = await axios.get(`${BACKEND_URL}api/v1/user/colleges`);
         const collegesData = response.data.colleges.map((college: { fullName: string }) => college.fullName);
         setColleges(collegesData);
       } catch (error) {
