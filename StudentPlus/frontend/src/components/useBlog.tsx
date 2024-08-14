@@ -12,7 +12,7 @@ interface Blog {
   comments: {
       id: string;
       content: string;
-      createdAt: string;
+      createdAt: Date;
       userId: string;
       user: {
           id: string;
@@ -31,7 +31,7 @@ interface Blog {
 export const useBlog = (id: string) => {
   const [loading, setLoading] = useState(true);
   const [blog, setBlog] = useState<Blog | null>(null);
-  const [error, setError] = useState(null);
+  const [error] = useState(null);
 
   useEffect(() => {
     const fetchBlog = async () => {

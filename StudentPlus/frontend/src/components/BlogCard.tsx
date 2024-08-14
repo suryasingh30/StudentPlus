@@ -18,7 +18,8 @@ interface BlogCardProps {
     photoUrl?: string;
     likeCount: number;
     commentCount: number;
-    handleDeleteBlog: (postId: string) => Promise<void>;
+    handleDeleteBlog?: (postId: string) => Promise<void>;
+    onToggleLike: () => Promise<void>;
 }
 
 export const BlogCard = ({
@@ -44,8 +45,11 @@ export const BlogCard = ({
 
     const handleDeleteClick = useCallback(async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        await handleDeleteBlog(id);
+        if (handleDeleteBlog) {
+            await handleDeleteBlog(id);
+        }
     }, [handleDeleteBlog, id]);
+    
 
     return (
         <>
@@ -54,6 +58,7 @@ export const BlogCard = ({
             style={{
                 background: '#1E1E1E',
                 maxWidth: '45rem',
+                minWidth: '45rem',
                 padding: '1rem',
                 marginBottom: '1rem',
                 color: 'white',

@@ -1,4 +1,4 @@
-const Popup = ({ setIsOpenPopup, title, children }: any) => {
+const Popup = ({ setIsOpenPopup, children }: any) => {
   return (
     <div
       onClick={setIsOpenPopup.bind(this, false)}

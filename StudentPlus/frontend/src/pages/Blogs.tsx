@@ -64,7 +64,7 @@ function Blogs() {
 
     const handleDeleteBlog = async (postId: string) => {
         try {
-            await axios.delete(`${BACKEND_URL}/v1/blog/${postId}`, {
+            await axios.delete(`${BACKEND_URL}api/v1/blog/${postId}`, {
                 headers: {
                     Authorization: localStorage.getItem("token") || ""
                 }
@@ -171,7 +171,7 @@ function Blogs() {
                             commentCount={blog.commentCount}
                             onToggleLike={() => handleToggleLike(blog.id)}
                             handleDeleteBlog={handleDeleteBlog}
-                            setBlogs={setBlogs}
+                            // setBlogs={setBlogs}
                         />
                     ))
                 ) : (

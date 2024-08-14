@@ -22,6 +22,7 @@ interface Blog {
     id: string;
     shortCollegeName: string;
     anonymousName: string;
+    fullCollegeName: string;
   };
   published: Date;
 }

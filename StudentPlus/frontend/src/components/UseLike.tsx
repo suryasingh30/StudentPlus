@@ -36,7 +36,7 @@ export const useLike = (initialLikeCount: number, postId: string) => {
         return;
     }
     try {
-      const response = await axios.post(`http://127.0.0.1:8787/api/v1/blog/${postId}/like`, {}, {
+      const response = await axios.post(`${BACKEND_URL}api/v1/blog/${postId}/like`, {}, {
         headers: {
           Authorization: token,
         },
