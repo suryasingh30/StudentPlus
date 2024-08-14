@@ -114,6 +114,7 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
               placeholder="123456"
               onChange={(e) => setPostInputs({ ...postInputs, password: e.target.value })}
             />
+        <h2 className='text-white pt-2'>Select Gmail account if you dont have college ID mail</h2>
             {type === 'signup' && (
               <LabelledDropdown
                 label="College"
