@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "vite":"^5.4.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
