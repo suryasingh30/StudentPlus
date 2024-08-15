@@ -49,7 +49,7 @@ userRouter.get('/colleges', async (c) => {
   });
 });
 
-userRouter.get('/checkUser', async (c) => {
+userRouter.post('/checkUser', async (c) => {
   try{
     const { email } = await c.req.json();
 

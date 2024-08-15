@@ -43,6 +43,7 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
 
     if (response.data.exists) {
       alert('Email ID already exists!');
+      // setError('Email ID already exists!');
       navigate('/signin')
       return;
     }
