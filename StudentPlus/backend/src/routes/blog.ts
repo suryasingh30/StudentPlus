@@ -35,8 +35,7 @@ export const blogRouter = new Hono<{
         message: "You are not logged in"
       });
     }
-  };
-  
+  }; 
 
   blogRouter.post('/', authMiddleware, async (c) => {
     try {

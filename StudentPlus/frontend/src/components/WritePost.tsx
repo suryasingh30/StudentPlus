@@ -37,6 +37,7 @@ const notify = () => toast("post published");
 const WritePost: React.FC<WritePostProps> = ({ handleBlogAdded, setIsOpenPopup }) => {
   const { register, handleSubmit, reset } = useForm<FormData>();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [flag, setFlag] = useState(true);
 
   const saveImage = async (file: File): Promise<string> => {
     const formData = new FormData();
@@ -52,6 +53,7 @@ const WritePost: React.FC<WritePostProps> = ({ handleBlogAdded, setIsOpenPopup }
   };
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
+    setFlag(false);
     try {
       let imageUrl = null;
       if (data.image && data.image[0]) {
@@ -79,6 +81,7 @@ const WritePost: React.FC<WritePostProps> = ({ handleBlogAdded, setIsOpenPopup }
       reset();
       // alert('Post created successfully!');
       setIsOpenPopup(false); // Close the popup after successful submission
+      setFlag(true);
     } catch (error) {
       console.error('Error saving post', error);
       // alert('Error saving post');
@@ -119,12 +122,14 @@ const WritePost: React.FC<WritePostProps> = ({ handleBlogAdded, setIsOpenPopup }
           />
         </div>
         
-        <button 
+        {flag && (
+          <button 
           type="submit" 
           className="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Submit
-        </button>
+          >
+            Submit
+          </button>
+        )}
       </form>
       
       {imageUrl && (

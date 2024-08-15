@@ -49,6 +49,29 @@ userRouter.get('/colleges', async (c) => {
   });
 });
 
+userRouter.get('/checkUser', async (c) => {
+  try{
+    const { email } = await c.req.json();
+
+    const prisma = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+
+    const user = await prisma.user.findFirst({
+      where: {
+        email: email,
+      },
+    });
+
+    if (user) {
+      return c.json({ exists: true, message: 'User already exists' }, 200);
+    }
+    return;
+  }catch(error){
+    return c.json("something went wrong", 500);
+  }
+}) 
+
 userRouter.post('/signup', async (c) => {
   const body = await c.req.json();
   

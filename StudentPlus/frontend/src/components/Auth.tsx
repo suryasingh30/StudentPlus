@@ -35,6 +35,18 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
   }, []);
 
   const sendOtp = async () => {
+
+    const response = await axios.post(
+      `${BACKEND_URL}api/v1/user/checkUser`,
+      {email: postInputs.email}
+    );
+
+    if (response.data.exists) {
+      alert('Email ID already exists!');
+      navigate('/signin')
+      return;
+    }
+
     // Generate OTP only when "Send OTP" button is clicked
     const otp_val = (Math.floor(Math.random() * 10000) + 1000).toString(); // Ensure it's a 4-digit number
     setGeneratedOtp(otp_val); // Store the generated OTP
@@ -105,7 +117,7 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
           <div className="pt-1">
             <LabelledInput
               label="email"
-              placeholder="surya@bit.ac.in"
+              placeholder="surya@bitdurg.ac.in"
               onChange={(e) => setPostInputs({ ...postInputs, email: e.target.value })}
             />
             <LabelledInput
@@ -125,7 +137,7 @@ export const Auth = ({ type }: { type: 'signup' | 'signin' }) => {
               />
             )}
             {type === 'signup' && (
-              <h2 className='text-white pt-2'>Select Gmail account if you dont have college ID mail</h2>
+              <h2 className='text-white pt-2'>Select Gmail account if you are using gmail ID</h2>
             )}
             {type === 'signin' && (
               <button

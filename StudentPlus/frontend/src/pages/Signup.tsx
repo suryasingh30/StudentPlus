@@ -4,10 +4,10 @@ export const Signup = () => {
   return (
     <>
     <div className="flex flex-col items-center justify-center h-screen bg-black">
-      <div className='relative top-[100px]'>
+      <div className='relative top-[70px]'>
         <BubbleText />
       </div>
-      <div className='flex-col items-center justify-center text-white relative top-[110px]'>
+      <div className='flex-col items-center justify-center text-white relative top-[70px]'>
         <h2 className='text-center max-w-screen-md mb-6'>StudentPlus is your go-to platform for navigating college life anonymously. Connect with fellow students, discuss academic pressures, and explore campus trends without revealing your identity. StudentPlus is built to help you stay informed and engaged while preserving your privacy.</h2>
       </div>
         <Auth type="signup"/>
