@@ -1,13 +1,99 @@
+/* App Bar */
+.appbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50; /* Ensure the appbar stays above other elements */
+    border-bottom: 1px solid #555; /* Slight border to separate from the content */
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 40px; /* Adjust padding for spacing */
+    background-color: #343434; /* Background color */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); /* Subtle shadow effect */
+}
+
+.appbar-logo {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: black; /* Ensure text color is black */
+}
+
+.appbar-logo img {
+    height: 36px;
+    width: auto;
+}
+
+.appbar-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.appbar-button {
+    margin-right: 16px;
+    padding: 8px 24px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.appbar-signin-button {
+    color: black;
+    background-color: white;
+}
+
+.appbar-signin-button:hover {
+    background-color: #f0f4ff; /* Slight hover effect for the sign-in button */
+}
+
+.appbar-signup-button {
+    color: white;
+    background-color: #1e3a8a; /* Blue background for the sign-up button */
+}
+
+.appbar-signup-button:hover {
+    background-color: #2563eb; /* Darker blue on hover */
+}
+
+.appbar-notifications {
+    display: flex;
+    align-items: center;
+    padding-top: 8px;
+    font-size: 16px;
+    color: white; /* Ensure the text and icon are white */
+}
+
+.appbar-notifications .fa-bell {
+    margin-right: 8px;
+    color: white; /* White icon color */
+}
+
+
+
+/* Side bar */
 .sidebar {
     width: 250px;
     padding: 20px;
     background-color: #222;
-    position: fixed;
+    position: fixed; /* Keeps the sidebar fixed on the screen */
     top: 70px; /* Adjust according to Appbar height */
     left: 0;
-    height: calc(100vh - 60px); /* Adjust according to Appbar height */
+    bottom: 0; /* Extend the sidebar to the bottom of the screen */
+    height: calc(100vh - 70px); /* Adjust height according to the Appbar height */
     display: flex;
     flex-direction: column;
+    transform: translateX(-100%); /* Initially hide the sidebar */
+    transition: transform 0.3s ease; /* Smooth sliding animation */
+    z-index: 1000; /* Ensure it stays on top of other elements */
+    overflow-y: auto; /* Allow scrolling inside the sidebar if content overflows */
+}
+
+.sidebar.open {
+    transform: translateX(0); /* Slide the sidebar in when open */
 }
 
 .sidebar-button {
@@ -30,8 +116,25 @@
     flex-grow: 1; /* Pushes the Sign Out button to the bottom */
 }
 
-@media (max-width: 768px) {
+/* Sidebar Indicator Button */
+.sidebar-indicator {
+    width: 30px;
+    height: 50px;
+    background-color: #7091E6;
+    position: fixed;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 1001; /* Higher than sidebar */
+}
+
+@media (min-width: 768px) {
     .sidebar {
-        display: none; /* Hide sidebar on narrow screens */
+        transform: translateX(0); /* Show the sidebar by default on larger screens */
+    }
+
+    .sidebar-indicator {
+        display: none; /* Hide the indicator on larger screens */
     }
 }

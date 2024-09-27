@@ -49,6 +49,7 @@ userRouter.get('/colleges', async (c) => {
   });
 });
 
+
 userRouter.post('/checkUser', async (c) => {
   try{
     const { email } = await c.req.json();
@@ -66,11 +67,12 @@ userRouter.post('/checkUser', async (c) => {
     if (user) {
       return c.json({ exists: true, message: 'User already exists' }, 200);
     }
-    return;
-  }catch(error){
-    return c.json("something went wrong", 500);
+    return c.json({ exists: false }, 200);
+  } catch (error) {
+    console.error("Error occurred in /checkUser:", error);
+    return c.json({ message: "Something went wrong" }, 500);
   }
-}) 
+});
 
 userRouter.post('/signup', async (c) => {
   const body = await c.req.json();
