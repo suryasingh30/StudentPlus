@@ -36,18 +36,25 @@ function Blogs() {
     const [loading, setLoading] = useState(true); // Loading state
     const userId = getUserIdFromToken();
 
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const loader = useRef<HTMLDivElement | null>(null);
+
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
-                const response = await axios.get(`${BACKEND_URL}api/v1/blog/bulk`, {
+                const response = await axios.get(`${BACKEND_URL}api/v1/blog/bulk?page=${page}&limit=6`, {
                     headers: {
                         Authorization: localStorage.getItem("token") || ""
                     }
                 });
 
-                if (Array.isArray(response.data)) {
-                    const sortedBlogs = response.data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                if(Array.isArray(response.data.blogs)){
+                    const newBlogs = response.data.blogs;
+                    const mergedBlogs = [...blogs, ...newBlogs];
+                    const sortedBlogs = mergedBlogs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                     setBlogs(sortedBlogs);
+                    setHasMore(response.data.hasMore);
                     setFilteredBlogs(sortedBlogs);
                 } else {
                     console.error('Unexpected response format');
@@ -60,7 +67,27 @@ function Blogs() {
         };
 
         fetchBlogs();
-    }, []);
+    }, [page]);
+
+    useEffect(()=>{
+        const observer = new IntersectionObserver(entries => {
+            if(entries[0].isIntersecting && hasMore){
+                setPage(prev => prev+1);
+            }
+        }, {
+            root: null,
+            rootMargin: '100px',
+            threshold: 1.0
+        });
+
+        if(loader.current)
+            observer.observe(loader.current);
+
+        return () => {
+            if(loader.current)
+                observer.unobserve(loader.current);
+        }
+    }, [hasMore]);
 
     const handleDeleteBlog = async (postId: string) => {
         try {
