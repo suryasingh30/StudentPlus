@@ -207,6 +207,9 @@ function Blogs() {
             </div>
             <ToastContainer />
             <PopularPost posts={transformBlogsToPopularPosts(blogs.slice(0, 4))} />
+            <div ref={loader} className='py-5 text-center text-gray-400'>
+                {hasMore ? "Loading more..." : "You have reached the end."}
+            </div>
         </div>
     );
 }
