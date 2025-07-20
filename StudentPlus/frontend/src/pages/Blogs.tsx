@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Appbar } from '../components/Appbar';
 import { BlogCard } from '../components/BlogCard';
 import BlogSkeleton from '../components/BlogSkeleton';
